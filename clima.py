@@ -86,6 +86,9 @@ class web_scrapping:
 
     def salvar(self, cidade):
         #--- CRIAR DIRETORIO DA CIDADE ---
+        if os.path.exists(cidade):
+            shutil.rmtree(cidade, ignore_errors=True)
+
         os.mkdir(cidade)
 
         #--- SALVAR ARQUIVO HTML---
@@ -110,7 +113,7 @@ class web_scrapping:
 
         print('iniciando scrapping ...')
         self.scrapping(link)
-        self.info_geral()
+        self.info_geral(cidade_html)
 
         print('carregando tamplate ...')
         self.substituir(cidade_titulo.upper())
@@ -120,9 +123,9 @@ class web_scrapping:
 
         print('\n ---> OK <--- ')
 
-    def info_geral(self):
+    def info_geral(self, cidade):
 
-        html = requests.get("https://www.cidade-brasil.com.br/municipio-tururu.html").content
+        html = requests.get(f"https://www.cidade-brasil.com.br/municipio-{cidade}.html").content
         soup = BeautifulSoup(html, 'html.parser')
 
         def info_territorio():
