@@ -12,8 +12,14 @@ class web_scrapping:
     def __init__(self):
         
         self.dict_dados = {}
-        self.chaves = ["Municípios limítrofes", "Fundação", "População total", "Densidade", "Clima", "Altitude", "IDH", "PIB", "Área total"]
-        self.parametro_replace = ['muni_limi', 'fund_', 'pop_total', 'dens_', 'clima_', 'altitude_', 'idh_', 'pib_', 'area_total']
+        self.chaves = ["Municípios limítrofes", "Fundação", "Densidade", "Clima", "Altitude", "IDH", "PIB"]
+        self.parametro_replace = ['muni_limi', 'fund_', 'dens_', 'clima_', 'altitude_', 'idh_', 'pib_']
+
+        self.territorio = ""
+        self.municipio = ""
+        self.adm = ""
+        self.transporte = ""
+        self.distancia = ""
 
     def scrapping(self, link):
         html = requests.get(link).content
@@ -29,15 +35,6 @@ class web_scrapping:
             if "Municípios limítrofes" in i:
                 self.dict_dados["Municípios limítrofes"] = self.topicos[pos+1]
 
-            if "Prefeito(a)" in i:
-                self.dict_dados["Prefeito"] = self.topicos[pos+1]
-
-            if "População total" in i:
-                self.dict_dados["População total"] = self.topicos[pos+1]
-
-            if "Área total" in i:
-                self.dict_dados["Área total"] = self.topicos[pos+1]
-
             if "Densidade" in i:
                 self.dict_dados["Densidade"] = self.topicos[pos+1]
 
@@ -49,9 +46,6 @@ class web_scrapping:
 
             if "IDH" in i:
                 self.dict_dados["IDH"] = self.topicos[pos+1]
-
-            if "Gini" in i:
-                self.dict_dadosGini = self.topicos[pos+1]
 
             if "PIB" in i:
                 self.dict_dados["PIB"] = self.topicos[pos+1]
@@ -65,7 +59,30 @@ class web_scrapping:
     def substituir(self, cidade_titulo):
         #--- ARQUIVO TEMPLATE ---
         arq = open("Template/Template.html", "r", encoding = "utf-8")
-        self.arq_str = arq.read().replace("titulo_para_mudar", cidade_titulo).replace(self.parametro_replace[0], self.dict_dados[self.chaves[0]]).replace(self.parametro_replace[1], self.dict_dados[self.chaves[1]]).replace(self.parametro_replace[2], self.dict_dados[self.chaves[2]]).replace(self.parametro_replace[3], self.dict_dados[self.chaves[3]]).replace(self.parametro_replace[4], self.dict_dados[self.chaves[4]]).replace(self.parametro_replace[5], self.dict_dados[self.chaves[5]]).replace(self.parametro_replace[6], self.dict_dados[self.chaves[6]]).replace(self.parametro_replace[7], self.dict_dados[self.chaves[7]]).replace(self.parametro_replace[8], self.dict_dados[self.chaves[8]])
+        self.arq_str = arq.read().replace("titulo_para_mudar", cidade_titulo).replace(
+            self.parametro_replace[0], 
+            self.dict_dados[self.chaves[0]]).replace(
+                self.parametro_replace[1], 
+                self.dict_dados[self.chaves[1]]).replace(
+                    self.parametro_replace[2], 
+                    self.dict_dados[self.chaves[2]]).replace(
+                        self.parametro_replace[3], 
+                        self.dict_dados[self.chaves[3]]).replace(
+                            self.parametro_replace[4], 
+                            self.dict_dados[self.chaves[4]]).replace(
+                                self.parametro_replace[5], 
+                                self.dict_dados[self.chaves[5]]).replace(
+                                    self.parametro_replace[6], 
+                                    self.dict_dados[self.chaves[6]]).replace(
+                                        "_linhas_dados_territorio", 
+                                        self.territorio).replace(
+                                            "_linhas_dados_municipio", self.municipio).replace(
+                                                "_linhas_dados_adm",
+                                                self.adm).replace(
+                                                    "_linhas_dados_transporte",
+                                                    self.transporte).replace(
+                                                        "_linhas_dados_info_distancia",
+                                                        self.distancia)
 
     def salvar(self, cidade):
         #--- CRIAR DIRETORIO DA CIDADE ---
@@ -93,6 +110,7 @@ class web_scrapping:
 
         print('iniciando scrapping ...')
         self.scrapping(link)
+        self.info_geral()
 
         print('carregando tamplate ...')
         self.substituir(cidade_titulo.upper())
@@ -102,17 +120,93 @@ class web_scrapping:
 
         print('\n ---> OK <--- ')
 
-#web_scrapping().start()
-html = requests.get("https://pt.wikipedia.org/wiki/Fortaleza").content
-soup = BeautifulSoup(html, 'html.parser')
+    def info_geral(self):
 
-historia = soup.find("div", attrs={"class":"mw-parser-output"})
-lista = historia.text.split("\n")
+        html = requests.get("https://www.cidade-brasil.com.br/municipio-tururu.html").content
+        soup = BeautifulSoup(html, 'html.parser')
 
-arq = open("test.html", "w", encoding="utf-8")
-arq.write(soup.prettify())
-arq.close()
+        def info_territorio():
+            territorio_corpo = soup.find("div", attrs={"id":"div_territorio"})
+            territorio_table = territorio_corpo.find("table", attrs={})
+            territorio_table_row = territorio_table.findAll("tr")
 
+            rows = ""
+
+            for i in territorio_table_row:
+                str = i.prettify()
+
+                if "Hora local" in str or "UTC" in str:
+                    pass
+                else:
+                    rows += i.prettify()
+
+            self.territorio = rows
+
+        def info_municipio():
+            municipio_corpo = soup.find("div", attrs={"id":"div_municipio"})
+            municipio_table = municipio_corpo.find("table")
+            municipio_table_row = municipio_table.findAll("tr")
+
+            rows = ""
+
+            for i in municipio_table_row:
+                str = i.prettify()
+                rows += str
+
+            self.municipio = rows
+
+        def info_adm():
+            adm_corpo = soup.find("div", attrs={"id":"div_administracao"})
+            adm_table = adm_corpo.find("table")
+            adm_table_row = adm_table.findAll("tr")
+
+            rows = ""
+
+            for i in adm_table_row:
+                str = i.prettify()
+
+                if "Ver o resultado" in str:
+                    pass
+                
+                else:
+                    rows += str
+
+            self.adm = rows
+
+        def info_transporte():
+            transporte_corpo = soup.find("div", attrs={"id":"div_transporte"})
+            transporte_table = transporte_corpo.find("table")
+            transporte_table_row = transporte_table.findAll("tr")
+
+            rows = ""
+
+            for i in transporte_table_row:
+                str = i.prettify()
+                rows += str
+
+            self.transporte = rows
+
+        def info_distancia():
+            transporte_corpo = soup.find("div", attrs={"id":"div_distancia"})
+            transporte_table = transporte_corpo.find("table")
+            transporte_table_row = transporte_table.findAll("tr")
+
+            rows = ""
+
+            for i in transporte_table_row:
+                str = i.prettify()
+                rows += str
+
+            self.distancia = rows
+
+        # --- CHAMAR FUNÇÕES ---
+        info_territorio()
+        info_municipio()
+        info_adm()
+        info_transporte()
+        info_distancia()
+
+web_scrapping().start()
 #
 #for i in lista:
 #    if "História" in i and "":
