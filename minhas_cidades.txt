@@ -1,0 +1,13 @@
+EMAIL: ijrs1@discente.ifpe.edu.br
+    63	Graça
+    176	Tururu	
+    89	Itapiúna
+    1   Abaiara		OK
+    141	Pindoretama	
+    126	Orós
+    107	Martinópole	
+    59	Fortaleza	FAZENDO
+    38	Caririaçu	OK
+
+EMAIL: ijrs1@discente.ifpe.edu.br
+     ->62	General Sampaio	

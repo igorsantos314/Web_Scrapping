@@ -21,6 +21,8 @@ class web_scrapping:
         self.transporte = ""
         self.distancia = ""
 
+        self.historia_geral = ""
+
         self.CURR_DIR = os.getcwd()
 
     def scrapping(self, link):
@@ -84,7 +86,9 @@ class web_scrapping:
                                                     "_linhas_dados_transporte",
                                                     self.transporte).replace(
                                                         "_linhas_dados_info_distancia",
-                                                        self.distancia)
+                                                        self.distancia).replace(
+                                                            "conteudo_historia", self.historia_geral
+                                                        )
 
     def salvar(self, cidade):
         dir = self.CURR_DIR + "/pages/"
@@ -105,23 +109,52 @@ class web_scrapping:
         #cidade_html =   input("Nome do Arquivo Html:  ")
         #link =          input("Link do Wikipedia:     ")
 
-        cidade_titulo = 'fortaleza'
-        cidade_html = 'fortaleza'
-        link = 'https://pt.wikipedia.org/wiki/Fortaleza'
+        dict_cidades = {    1:['Graça', 'Graca', 'https://pt.wikipedia.org/wiki/Graça_(Ceará)'],
+                            2:['Tururu', 'Tururu', 'https://pt.wikipedia.org/wiki/Tururu'],
+                            3:['Itapiúna', 'Itapiuna', 'https://pt.wikipedia.org/wiki/Itapiúna'],
+                            4:['Abaiara', 'Abaiara', 'https://pt.wikipedia.org/wiki/Abaiara'],
+                            5:['Pindoretama', 'Pindoretama', 'https://pt.wikipedia.org/wiki/Pindoretama'],
+                            6:['Orós', 'Oros', 'https://pt.wikipedia.org/wiki/Orós'],
+                            7:['Martinópole', 'Martinopole', 'https://pt.wikipedia.org/wiki/Martinópole'],
+                            8:['Fortaleza', 'Fortaleza', 'https://pt.wikipedia.org/wiki/Fortaleza'],
+                            9:['Caririaçu', 'Caririacu', 'https://pt.wikipedia.org/wiki/Caririaçu'],
+                            10:['General Sampaio', 'General Sampaio', 'https://pt.wikipedia.org/wiki/General_Sampaio']
+                        }
 
-        print('-------------------------------------')
+        for i in dict_cidades:
+            cidade_titulo = dict_cidades[i][0]
+            cidade_html = dict_cidades[i][1]
+            link = dict_cidades[i][2]
 
-        print('iniciando scrapping ...')
-        self.scrapping(link)
-        self.info_geral(cidade_html)
+            print('\n-------------------------------------')
 
-        print('carregando tamplate ...')
-        self.substituir(cidade_titulo.upper())
+            print('iniciando scrapping ...')
+            self.scrapping(link)
+            self.info_geral(cidade_html)
+            self.historia(cidade_html.lower().replace(' ', '-'))
 
-        print('salvando novo site ...')
-        self.salvar(cidade_html.title())
+            print('carregando tamplate ...')
+            self.substituir(cidade_titulo.upper())
 
-        print('\n ---> OK <--- ')
+            print('salvando novo site ...')
+            self.salvar(cidade_html.title().replace(' ', '_'))
+
+            print(f'\n ---> CIDADE: {cidade_titulo} OK!<--- ')
+
+    def historia(self, cidade):
+        html = requests.get(f"https://cidades.ibge.gov.br/brasil/ce/{cidade}/historico").content
+        soup = BeautifulSoup(html, 'html.parser')
+
+        hist_titulo = soup.findAll("h2", attrs={"class":"hist__titulo"})
+        historia_texto = soup.findAll("div", attrs={"class":"hist__texto"})
+
+        rows = ''
+
+        for pos, i in enumerate(historia_texto):
+            rows += "<h2 style>" + hist_titulo[pos].text + "</h2>"
+            rows += i.prettify()
+
+        self.historia_geral = rows
 
     def info_geral(self, cidade):
 
@@ -238,7 +271,6 @@ class web_scrapping:
                                     pass_td = False
 
                                 elif pass_td == False:
-                                    print(str[cont-4], str[cont-3], str[cont-2], str[cont-1], str[cont])
                                     break
 
                             else:
