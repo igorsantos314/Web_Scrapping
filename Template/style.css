@@ -71,14 +71,7 @@ a#inicio {
   background: url("http://1.bp.blogspot.com/-Wlx8yf6_d_8/Ug_B7H6n1eI/AAAAAAAABDU/ByQCpVvhnPs/s1600/330201_karta-mira_geograficheskaya_geografiya_materiki_1920x1080_(www.GdeFon.ru).jpg")
     center/cover;
 }
-#cabecalho-imagem2 {
-  background: url("../../images/instrucao.png")
-    center/cover;
-}
-#cabecalho-imagem3 {
-  background: url("../../images/instrucao.png")
-    center/cover;
-}
+
 #cabecalho-imagem4 {
   /* NÃO MUDAR ESSA IMAGEM*/
   background: url("https://sm.pcmag.com/pcmag_in/how-to/2/25-google-/25-google-maps-tricks-you-need-to-try_uzuw.jpg")

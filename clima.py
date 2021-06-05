@@ -21,6 +21,8 @@ class web_scrapping:
         self.transporte = ""
         self.distancia = ""
 
+        self.CURR_DIR = os.getcwd()
+
     def scrapping(self, link):
         html = requests.get(link).content
 
@@ -85,29 +87,27 @@ class web_scrapping:
                                                         self.distancia)
 
     def salvar(self, cidade):
-        #--- CRIAR DIRETORIO DA CIDADE ---
-        if os.path.exists(cidade):
-            shutil.rmtree(cidade, ignore_errors=True)
+        dir = self.CURR_DIR + "/pages/"
 
-        os.mkdir(cidade)
+        #--- CRIAR DIRETORIO DA CIDADE ---
+        if os.path.exists(dir + cidade):
+            shutil.rmtree(dir + cidade, ignore_errors=True)
+
+        os.mkdir(dir + cidade)
 
         #--- SALVAR ARQUIVO HTML---
-        arq_html = open(cidade + "/" + cidade + ".html", "w", encoding="utf-8")
+        arq_html = open(dir + cidade + "/" + cidade + ".html", "w", encoding="utf-8")
         arq_html.write(self.arq_str)
         arq_html.close()
 
-        #--- SALVAR ARQUIVO CSS ---
-        arq_css = open("Template/style.css", "r", encoding = "utf-8")
-        arq_css_str = arq_css.read()
-
-        arq_css_destino = open(cidade + "/style.css", "w", encoding="utf-8")
-        arq_css_destino.write(arq_css_str)
-        arq_css_destino.close()
-
     def start(self):
-        cidade_titulo = input("Nome da Cidade Titulo: ")
-        cidade_html =   input("Nome do Arquivo Html:  ")
-        link =          input("Link do Wikipedia:     ")
+        #cidade_titulo = input("Nome da Cidade Titulo: ")
+        #cidade_html =   input("Nome do Arquivo Html:  ")
+        #link =          input("Link do Wikipedia:     ")
+
+        cidade_titulo = 'fortaleza'
+        cidade_html = 'fortaleza'
+        link = 'https://pt.wikipedia.org/wiki/Fortaleza'
 
         print('-------------------------------------')
 
@@ -150,13 +150,7 @@ class web_scrapping:
             municipio_table = municipio_corpo.find("table")
             municipio_table_row = municipio_table.findAll("tr")
 
-            rows = ""
-
-            for i in municipio_table_row:
-                str = i.prettify()
-                rows += str
-
-            self.municipio = rows
+            self.municipio = replace_coluna(municipio_table_row)
 
         def info_adm():
             adm_corpo = soup.find("div", attrs={"id":"div_administracao"})
@@ -181,26 +175,83 @@ class web_scrapping:
             transporte_table = transporte_corpo.find("table")
             transporte_table_row = transporte_table.findAll("tr")
 
-            rows = ""
-
-            for i in transporte_table_row:
-                str = i.prettify()
-                rows += str
-
-            self.transporte = rows
+            self.transporte = replace_link(transporte_table_row)
 
         def info_distancia():
             transporte_corpo = soup.find("div", attrs={"id":"div_distancia"})
             transporte_table = transporte_corpo.find("table")
             transporte_table_row = transporte_table.findAll("tr")
 
+            self.distancia = replace_link(transporte_table_row)
+
+        def replace_link(table_row):
+
+            links = []
             rows = ""
 
-            for i in transporte_table_row:
+            for i in table_row:
                 str = i.prettify()
+
+                for pos, i in enumerate(str):
+                    if i == '<' and str[pos+1] == 'a':
+                        cont = pos
+                        link = ''
+
+                        while True:
+                            if str[cont] == '>':
+                                link += str[cont]
+                                links.append(link)
+                                break
+                                
+                            else:
+                                link += str[cont]
+                                cont += 1
+
                 rows += str
 
-            self.distancia = rows
+            #SUBSTITUIR 
+            for lk in links:
+                rows = rows.replace(lk, "")
+
+            return rows.replace("</a>", "")
+
+        def replace_coluna(table_row):
+
+            links = []
+            rows = ""
+
+            for i in table_row:
+                str = i.prettify()
+                
+                for pos, i in enumerate(str):
+                    if i == '<' and str[pos+1] == 't' and str[pos+2] == 'd' and str[pos+13] == '6':
+                        cont = pos
+                        link = ''
+                        pass_td = True
+
+                        while True:
+                            if str[cont-4] == '<' and str[cont-3] == '/' and str[cont-2] == 't' and str[cont-1] == 'd' and str[cont] == '>':
+                                link += str[cont]
+                                links.append(link)
+
+                                if pass_td:
+                                    pass_td = False
+
+                                elif pass_td == False:
+                                    print(str[cont-4], str[cont-3], str[cont-2], str[cont-1], str[cont])
+                                    break
+
+                            else:
+                                link += str[cont]
+                                cont += 1
+
+                rows += str
+
+            #SUBSTITUIR 
+            for lk in links:
+                rows = rows.replace(lk, "")
+
+            return rows.replace("</a>", "")
 
         # --- CHAMAR FUNÇÕES ---
         info_territorio()
@@ -209,9 +260,5 @@ class web_scrapping:
         info_transporte()
         info_distancia()
 
+
 web_scrapping().start()
-#
-#for i in lista:
-#    if "História" in i and "":
-#        break
-#    print(i)
