@@ -22,6 +22,7 @@ class web_scrapping:
         self.distancia = ""
 
         self.historia_geral = ""
+        self.mapa = ""
 
         self.CURR_DIR = os.getcwd()
 
@@ -87,8 +88,9 @@ class web_scrapping:
                                                     self.transporte).replace(
                                                         "_linhas_dados_info_distancia",
                                                         self.distancia).replace(
-                                                            "conteudo_historia", self.historia_geral
-                                                        )
+                                                            "conteudo_historia", self.historia_geral).replace(
+                                                                "_mapa",
+                                                                self.mapa)
 
     def salvar(self, cidade):
         dir = self.CURR_DIR + "/pages/"
@@ -105,26 +107,24 @@ class web_scrapping:
         arq_html.close()
 
     def start(self):
-        #cidade_titulo = input("Nome da Cidade Titulo: ")
-        #cidade_html =   input("Nome do Arquivo Html:  ")
-        #link =          input("Link do Wikipedia:     ")
 
-        dict_cidades = {    1:['Graça', 'Graca', 'https://pt.wikipedia.org/wiki/Graça_(Ceará)'],
-                            2:['Tururu', 'Tururu', 'https://pt.wikipedia.org/wiki/Tururu'],
-                            3:['Itapiúna', 'Itapiuna', 'https://pt.wikipedia.org/wiki/Itapiúna'],
-                            4:['Abaiara', 'Abaiara', 'https://pt.wikipedia.org/wiki/Abaiara'],
-                            5:['Pindoretama', 'Pindoretama', 'https://pt.wikipedia.org/wiki/Pindoretama'],
-                            6:['Orós', 'Oros', 'https://pt.wikipedia.org/wiki/Orós'],
-                            7:['Martinópole', 'Martinopole', 'https://pt.wikipedia.org/wiki/Martinópole'],
-                            8:['Fortaleza', 'Fortaleza', 'https://pt.wikipedia.org/wiki/Fortaleza'],
-                            9:['Caririaçu', 'Caririacu', 'https://pt.wikipedia.org/wiki/Caririaçu'],
-                            10:['General Sampaio', 'General Sampaio', 'https://pt.wikipedia.org/wiki/General_Sampaio']
+        dict_cidades = {    1:['Graça', 'Graca', 'https://pt.wikipedia.org/wiki/Graça_(Ceará)', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d1019018.313935277!2d-40.20152964138334!3d-3.90816767391178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x794dc5c69df176f%3A0xee453f8e3d4c8715!2zR3Jhw6dhLCBDRQ!3m2!1d-4.0445958!2d-40.7493893!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936526686!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            2:['Tururu', 'Tururu', 'https://pt.wikipedia.org/wiki/Tururu', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d509649.3812065502!2d-39.262466147486066!3d-3.6701102885158026!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7c05b8e7a8306d5%3A0xe67963c551b6c20d!2sTururu%2C%20CE!3m2!1d-3.5982866!2d-39.4336292!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936594658!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            3:['Itapiúna', 'Itapiuna', 'https://pt.wikipedia.org/wiki/Itapiúna', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d509359.5623659899!2d-38.97988034528306!3d-4.1471167000857125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7bedc5cf0323a73%3A0x8f6bfaa91c1dded3!2zSXRhcGnDum5hLCBDRQ!3m2!1d-4.5629728!2d-38.9210924!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936617106!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            4:['Abaiara', 'Abaiara', 'https://pt.wikipedia.org/wiki/Abaiara', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d2033252.3251171834!2d-39.30731782928747!3d-5.537932337382022!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7a1691bc8534507%3A0x62a0f764730ab5e5!2sAbaiara%2C%20CE!3m2!1d-7.346188799999999!2d-39.035626!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936667857!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            5:['Pindoretama', 'Pindoretama', 'https://pt.wikipedia.org/wiki/Pindoretama', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d254762.46340218477!2d-38.55636315694886!3d-3.8821229177952796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7b89f655b8bc1e1%3A0x98d41b130b6bc0e8!2sPindoretama%2C%20CE!3m2!1d-4.0304585!2d-38.3036892!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936688114!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            6:['Orós', 'Oros', 'https://pt.wikipedia.org/wiki/Orós', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d2035063.3883944156!2d-40.04264679233758!3d-4.983938465501245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7a34682cad6d325%3A0x9fb5b0754767a20b!2zT3LDs3MsIENF!3m2!1d-6.2446364!2d-38.915602199999995!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936713323!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            7:['Martinópole', 'Martinopole', 'https://pt.wikipedia.org/wiki/Martinópole', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d1019162.7620490495!2d-40.173057897703416!3d-3.7874199824842987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7ebad968549f529%3A0x5887ed1405d37e60!2sMartin%C3%B3pole%2C%20CE!3m2!1d-3.2242659999999996!2d-40.6954624!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936737122!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            8:['Fortaleza', 'Fortaleza', 'https://pt.wikipedia.org/wiki/Fortaleza', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d4062655.0742387506!2d-39.9173603306936!3d-6.071710740603618!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7a9cf0cbdd3742b%3A0xe3e669d2b79586db!2sBelo%20Jardim%20-%20PE!3m2!1d-8.3872503!2d-36.4592707!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936824635!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            9:['Caririaçu', 'Caririacu', 'https://pt.wikipedia.org/wiki/Caririaçu', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d2033779.8423875463!2d-39.98647123528331!3d-5.382439958150999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7a3d2f94027c6f1%3A0x2ea3064c989575d2!2zQ2FyaXJpYcOndSwgQ0U!3m2!1d-7.0417977!2d-39.2855054!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936768386!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>'],
+                            10:['General Sampaio', 'General Sampaio', 'https://pt.wikipedia.org/wiki/General_Sampaio', '<iframe src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d509486.0833047714!2d-39.27152896765464!3d-3.945965822806705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x7bf9ad2190e7101%3A0xdb8a6f8f415c8920!2sGeneral%20Sampaio%2C%20CE!3m2!1d-4.0438884!2d-39.454310199999995!4m5!1s0x7c74c3f464c783f%3A0x4661c60a0c6b37ca!2sFortaleza%20-%20CE!3m2!1d-3.7327203!2d-38.5270134!5e0!3m2!1spt-BR!2sbr!4v1622936792410!5m2!1spt-BR!2sbr" width="100%" height="600" style="border:0;" allowfullscreen="" loading="lazy"></iframe>']
                         }
 
         for i in dict_cidades:
             cidade_titulo = dict_cidades[i][0]
             cidade_html = dict_cidades[i][1]
             link = dict_cidades[i][2]
+            self.mapa = dict_cidades[i][3]
 
             print('\n-------------------------------------')
 
