@@ -2,18 +2,13 @@ from bs4 import BeautifulSoup
 import requests
 import os, shutil
 
-#EXEMPLOS
-#print(soup.prettify())
-#brasileirao = soup.find("div", class_="S2ILnf nCzB3b")
-#print(soup.find("table", class_="infobox infobox_v2"))
-
 class web_scrapping:
 
     def __init__(self):
         
         self.dict_dados = {}
-        self.chaves = ["Municípios limítrofes", "Fundação", "Densidade", "Clima", "Altitude", "IDH", "PIB"]
-        self.parametro_replace = ['muni_limi', 'fund_', 'dens_', 'clima_', 'altitude_', 'idh_', 'pib_']
+        self.chaves = ["Municípios limítrofes", "Fundação", "Clima", "IDH", "PIB"]
+        self.parametro_replace = ['muni_limi', 'fund_', 'clima_', 'idh_', 'pib_']
 
         self.territorio = ""
         self.municipio = ""
@@ -40,14 +35,8 @@ class web_scrapping:
             if "Municípios limítrofes" in i:
                 self.dict_dados["Municípios limítrofes"] = self.topicos[pos+1]
 
-            if "Densidade" in i:
-                self.dict_dados["Densidade"] = self.topicos[pos+1]
-
             if "Clima" in i:
                 self.dict_dados["Clima"] = self.topicos[pos+1]
-
-            if "Altitude" in i:
-                self.dict_dados["Altitude"] = self.topicos[pos+1]
 
             if "IDH" in i:
                 self.dict_dados["IDH"] = self.topicos[pos+1]
@@ -57,9 +46,6 @@ class web_scrapping:
 
             if "Fundação" in i:
                 self.dict_dados["Fundação"] = self.topicos[pos+1]
-
-            if "Aniversário" in i:
-                self.dict_dados["Aniversário"] = self.topicos[pos+1]
     
     def substituir(self, cidade_titulo):
         #--- ARQUIVO TEMPLATE ---
@@ -75,10 +61,6 @@ class web_scrapping:
                         self.dict_dados[self.chaves[3]]).replace(
                             self.parametro_replace[4], 
                             self.dict_dados[self.chaves[4]]).replace(
-                                self.parametro_replace[5], 
-                                self.dict_dados[self.chaves[5]]).replace(
-                                    self.parametro_replace[6], 
-                                    self.dict_dados[self.chaves[6]]).replace(
                                         "_linhas_dados_territorio", 
                                         self.territorio).replace(
                                             "_linhas_dados_municipio", self.municipio).replace(
@@ -88,7 +70,6 @@ class web_scrapping:
                                                     self.transporte).replace(
                                                         "_linhas_dados_info_distancia",
                                                         self.distancia).replace(
-                                                            "conteudo_historia", self.historia_geral).replace(
                                                                 "_mapa",
                                                                 self.mapa)
 
@@ -100,6 +81,7 @@ class web_scrapping:
             shutil.rmtree(dir + cidade, ignore_errors=True)
 
         os.mkdir(dir + cidade)
+        os.mkdir(dir + cidade + "/src")
 
         #--- SALVAR ARQUIVO HTML---
         arq_html = open(dir + cidade + "/" + cidade + ".html", "w", encoding="utf-8")
@@ -131,7 +113,6 @@ class web_scrapping:
             print('iniciando scrapping ...')
             self.scrapping(link)
             self.info_geral(cidade_html)
-            self.historia(cidade_html.lower().replace(' ', '-'))
 
             print('carregando tamplate ...')
             self.substituir(cidade_titulo.upper())
@@ -145,16 +126,15 @@ class web_scrapping:
         html = requests.get(f"https://cidades.ibge.gov.br/brasil/ce/{cidade}/historico").content
         soup = BeautifulSoup(html, 'html.parser')
 
+        print(f"https://cidades.ibge.gov.br/brasil/ce/{cidade}/historico")
+
         hist_titulo = soup.findAll("h2", attrs={"class":"hist__titulo"})
         historia_texto = soup.findAll("div", attrs={"class":"hist__texto"})
 
         rows = ''
 
-        for pos, i in enumerate(historia_texto):
-            rows += "<h2 style>" + hist_titulo[pos].text + "</h2>"
+        for i in historia_texto:
             rows += i.prettify()
-
-        self.historia_geral = rows
 
     def info_geral(self, cidade):
 
